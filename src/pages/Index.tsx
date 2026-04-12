@@ -7,12 +7,17 @@ import { LeadsChart } from "@/components/dashboard/LeadsChart";
 import { CPAChart } from "@/components/dashboard/CPAChart";
 import { CampaignDonut } from "@/components/dashboard/CampaignDonut";
 import { CampaignTable } from "@/components/dashboard/CampaignTable";
+import { useMetaAds } from "@/hooks/useMetaAds";
 import { mockDailyMetrics, mockCampaigns, getKPIs } from "@/lib/mock-data";
 
 export default function Index() {
   const [days, setDays] = useState(30);
-  const metrics = mockDailyMetrics.slice(-days);
-  const kpis = getKPIs(days);
+  const { data, isLoading, error } = useMetaAds(days);
+
+  // Use real data if available, fallback to mock
+  const metrics = data?.dailyMetrics ?? mockDailyMetrics.slice(-days);
+  const campaigns = data?.campaigns ?? mockCampaigns;
+  const kpis = data?.kpis ?? getKPIs(days);
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,15 +59,17 @@ export default function Index() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-10">
           <CPAChart data={metrics} />
-          <CampaignDonut campaigns={mockCampaigns} />
+          <CampaignDonut campaigns={campaigns} />
         </div>
 
         {/* Campaigns */}
-        <CampaignTable campaigns={mockCampaigns} />
+        <CampaignTable campaigns={campaigns} />
 
         {/* Footer */}
         <div className="text-center mt-16 text-[10px] text-muted-foreground/40 tracking-[0.2em] uppercase">
-          Dados em tempo real · Castel Black
+          {data?.updatedAt
+            ? `Atualizado às ${new Date(data.updatedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })} · Dados em tempo real · Castel Black`
+            : "Dados em tempo real · Castel Black"}
         </div>
       </div>
     </div>
