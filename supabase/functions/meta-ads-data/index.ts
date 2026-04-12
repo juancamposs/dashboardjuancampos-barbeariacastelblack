@@ -44,13 +44,13 @@ serve(async (req) => {
     );
     const dailyData = await dailyResp.json();
 
-    // 4. Buscar status das campanhas
+    // 4. Buscar status e objetivo das campanhas
     const statusResp = await fetch(
-      `${GRAPH_API}/${META_ACCOUNT_ID}/campaigns?fields=id,name,status&limit=50&access_token=${META_TOKEN}`
+      `${GRAPH_API}/${META_ACCOUNT_ID}/campaigns?fields=id,name,status,objective&limit=50&access_token=${META_TOKEN}`
     );
     const statusData = await statusResp.json();
     const statusMap = new Map(
-      (statusData.data || []).map((c: any) => [c.id, c.status.toLowerCase()])
+      (statusData.data || []).map((c: any) => [c.id, { status: c.status.toLowerCase(), objective: c.objective }])
     );
 
     // Processar campanhas
@@ -72,11 +72,17 @@ serve(async (req) => {
     const campaigns = (campaignData.data || []).map((c: any) => {
       const leads = getLeads(c.actions);
       const spend = parseFloat(c.spend || "0");
-      const status = statusMap.get(c.campaign_id) || "active";
+      const info = statusMap.get(c.campaign_id) || { status: "active", objective: "" };
+      const status = info.status;
+      const objective = info.objective || "";
+      // Classificar tipo: macete (LINK_CLICKS) ou lead (OUTCOME_ENGAGEMENT, MESSAGES)
+      const tipo = objective === "LINK_CLICKS" ? "macete" : "lead";
       return {
         id: c.campaign_id,
         name: c.campaign_name,
         status: status === "active" ? "active" : status === "paused" ? "paused" : "completed",
+        objective,
+        tipo,
         spend,
         impressions: parseInt(c.impressions || "0"),
         clicks: parseInt(c.clicks || "0"),

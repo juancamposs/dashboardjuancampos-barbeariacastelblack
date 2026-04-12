@@ -2,6 +2,8 @@ export interface Campaign {
   id: string;
   name: string;
   status: "active" | "paused" | "completed";
+  objective?: string;
+  tipo?: "macete" | "lead";
   spend: number;
   impressions: number;
   clicks: number;
