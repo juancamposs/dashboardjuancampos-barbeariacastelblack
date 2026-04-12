@@ -12,17 +12,17 @@ export function KPICard({ title, value, icon, delay = 0 }: KPICardProps) {
     <div
       className={cn(
         "card-vault gold-border-glow opacity-0 animate-fade-in",
-        "hover:border-gold/30 transition-all duration-300"
+        "hover:border-primary/20 transition-all duration-300 p-8"
       )}
       style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
+      <div className="flex items-center justify-between mb-5">
+        <span className="text-muted-foreground/80 text-xs font-medium tracking-[0.15em] uppercase">
           {title}
         </span>
-        <span className="text-gold/60">{icon}</span>
+        <span className="text-primary/40">{icon}</span>
       </div>
-      <p className="text-3xl font-bold tracking-tight gold-text gold-glow">
+      <p className="text-4xl font-extrabold tracking-tight gold-text gold-glow leading-none">
         {value}
       </p>
     </div>

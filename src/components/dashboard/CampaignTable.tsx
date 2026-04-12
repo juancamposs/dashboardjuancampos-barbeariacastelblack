@@ -3,11 +3,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { Campaign } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
-interface CampaignTableProps {
-  campaigns: Campaign[];
-}
-
-export function CampaignTable({ campaigns }: CampaignTableProps) {
+export function CampaignTable({ campaigns }: { campaigns: Campaign[] }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [sortKey, setSortKey] = useState<keyof Campaign>("name");
   const [sortAsc, setSortAsc] = useState(true);
@@ -29,15 +25,12 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
     return sortAsc ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
   });
 
-  const statusColor = (s: string) =>
-    s === "active" ? "text-emerald-400" : s === "paused" ? "text-amber-400" : "text-muted-foreground";
-
-  const cpaIndicator = (cpa: number) =>
-    cpa <= 15 ? "text-emerald-400" : cpa <= 20 ? "text-amber-400" : "text-red-400";
+  const statusLabel = (s: string) => s === "active" ? "Ativo" : s === "paused" ? "Pausado" : "Concluído";
+  const cpaColor = (cpa: number) => cpa <= 15 ? "text-emerald-400/90" : cpa <= 20 ? "text-amber-400/90" : "text-red-400/90";
 
   const th = (label: string, key: keyof Campaign) => (
     <th
-      className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors"
+      className="px-5 py-4 text-left text-[10px] font-medium text-muted-foreground/60 uppercase tracking-[0.15em] cursor-pointer hover:text-muted-foreground transition-colors"
       onClick={() => handleSort(key)}
     >
       {label} {sortKey === key && (sortAsc ? "↑" : "↓")}
@@ -45,15 +38,17 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
   );
 
   return (
-    <div className="card-vault overflow-hidden opacity-0 animate-fade-in" style={{ animationDelay: "800ms" }}>
-      <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-6 px-2">
-        Campanhas
-      </h3>
+    <div className="card-vault overflow-hidden opacity-0 animate-fade-in p-0" style={{ animationDelay: "800ms" }}>
+      <div className="px-8 pt-8 pb-6">
+        <h3 className="text-xs font-medium text-muted-foreground/80 uppercase tracking-[0.15em]">
+          Visão clara das campanhas
+        </h3>
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border">
-              <th className="w-8" />
+            <tr className="border-b border-border/50">
+              <th className="w-10" />
               {th("Nome", "name")}
               {th("Status", "status")}
               {th("Gasto", "spend")}
@@ -67,40 +62,39 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
           </thead>
           <tbody>
             {sorted.map((c) => (
-              <>
+              <Fragment key={c.id}>
                 <tr
-                  key={c.id}
-                  className="border-b border-border/50 hover:bg-surface-elevated/50 transition-colors cursor-pointer"
+                  className="border-b border-border/30 hover:bg-surface/50 transition-colors duration-200 cursor-pointer"
                   onClick={() => toggle(c.id)}
                 >
-                  <td className="px-2 py-3 text-muted-foreground">
-                    {expanded.has(c.id) ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                  <td className="px-3 py-4 text-muted-foreground/50">
+                    {expanded.has(c.id) ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                   </td>
-                  <td className="px-4 py-3 font-medium">{c.name}</td>
-                  <td className={cn("px-4 py-3 capitalize", statusColor(c.status))}>{c.status === "active" ? "Ativo" : c.status === "paused" ? "Pausado" : "Concluído"}</td>
-                  <td className="px-4 py-3">R$ {c.spend.toFixed(2)}</td>
-                  <td className="px-4 py-3">{c.impressions.toLocaleString("pt-BR")}</td>
-                  <td className="px-4 py-3">{c.clicks.toLocaleString("pt-BR")}</td>
-                  <td className="px-4 py-3">{c.ctr}%</td>
-                  <td className="px-4 py-3">R$ {c.cpc.toFixed(2)}</td>
-                  <td className="px-4 py-3">{c.leads}</td>
-                  <td className={cn("px-4 py-3 font-semibold", cpaIndicator(c.cpa))}>R$ {c.cpa.toFixed(2)}</td>
+                  <td className="px-5 py-4 font-medium text-foreground/90">{c.name}</td>
+                  <td className={cn("px-5 py-4 text-xs", c.status === "active" ? "text-emerald-400/80" : "text-muted-foreground/50")}>{statusLabel(c.status)}</td>
+                  <td className="px-5 py-4 text-foreground/70">R$ {c.spend.toFixed(2)}</td>
+                  <td className="px-5 py-4 text-foreground/70">{c.impressions.toLocaleString("pt-BR")}</td>
+                  <td className="px-5 py-4 text-foreground/70">{c.clicks.toLocaleString("pt-BR")}</td>
+                  <td className="px-5 py-4 text-foreground/70">{c.ctr}%</td>
+                  <td className="px-5 py-4 text-foreground/70">R$ {c.cpc.toFixed(2)}</td>
+                  <td className="px-5 py-4 text-foreground/70">{c.leads}</td>
+                  <td className={cn("px-5 py-4 font-semibold", cpaColor(c.cpa))}>R$ {c.cpa.toFixed(2)}</td>
                 </tr>
                 {expanded.has(c.id) && c.ads.map((ad) => (
-                  <tr key={ad.id} className="bg-surface/50 border-b border-border/30">
+                  <tr key={ad.id} className="bg-surface/30 border-b border-border/20">
                     <td />
-                    <td className="px-4 py-2.5 pl-10 text-muted-foreground text-xs">{ad.name}</td>
+                    <td className="px-5 py-3.5 pl-12 text-muted-foreground/60 text-xs">{ad.name}</td>
                     <td />
-                    <td className="px-4 py-2.5 text-xs">R$ {ad.spend.toFixed(2)}</td>
+                    <td className="px-5 py-3.5 text-xs text-foreground/50">R$ {ad.spend.toFixed(2)}</td>
                     <td />
-                    <td className="px-4 py-2.5 text-xs">{ad.clicks}</td>
-                    <td className="px-4 py-2.5 text-xs">{ad.ctr}%</td>
+                    <td className="px-5 py-3.5 text-xs text-foreground/50">{ad.clicks}</td>
+                    <td className="px-5 py-3.5 text-xs text-foreground/50">{ad.ctr}%</td>
                     <td />
-                    <td className="px-4 py-2.5 text-xs">{ad.leads}</td>
+                    <td className="px-5 py-3.5 text-xs text-foreground/50">{ad.leads}</td>
                     <td />
                   </tr>
                 ))}
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>
@@ -108,3 +102,5 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
     </div>
   );
 }
+
+import { Fragment } from "react";
