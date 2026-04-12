@@ -54,24 +54,28 @@ export default function Index() {
             value={`R$ ${kpis.totalSpend.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
             icon={<DollarSign className="w-5 h-5" />}
             delay={100}
+            description="Valor total gasto em todas as campanhas no período"
           />
           <KPICard
             title="Total Leads"
             value={kpis.totalLeads.toString()}
             icon={<Users className="w-5 h-5" />}
             delay={200}
+            description="Pessoas que mandaram mensagem via anúncio"
           />
           <KPICard
             title="CPA Médio"
             value={`R$ ${kpis.avgCPA.toFixed(2)}`}
             icon={<Target className="w-5 h-5" />}
             delay={300}
+            description="Custo médio para conseguir cada lead"
           />
           <KPICard
             title="CTR Médio"
             value={`${kpis.avgCTR}%`}
             icon={<MousePointerClick className="w-5 h-5" />}
             delay={400}
+            description="Porcentagem de pessoas que clicaram no anúncio"
           />
         </div>
 
@@ -92,24 +96,28 @@ export default function Index() {
                 value={`R$ ${maceteInvestido.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
                 icon={<DollarSign className="w-5 h-5" />}
                 delay={100}
+                description="Valor investido em campanhas de captação"
               />
               <KPICard
-                title="Cliques no Link"
+                title="Visitas ao Perfil"
                 value={maceteCliques.toLocaleString("pt-BR")}
-                icon={<MousePointerClick className="w-5 h-5" />}
+                icon={<Eye className="w-5 h-5" />}
                 delay={200}
+                description="Cliques que levaram ao perfil do Instagram"
               />
               <KPICard
-                title="Custo por Clique"
+                title="Custo por Visita"
                 value={`R$ ${maceteCliques > 0 ? (maceteInvestido / maceteCliques).toFixed(2) : "0.00"}`}
                 icon={<Target className="w-5 h-5" />}
                 delay={300}
+                description="Quanto custa cada visita ao perfil"
               />
               <KPICard
                 title="CTR"
                 value={`${maceteCTR}%`}
-                icon={<Eye className="w-5 h-5" />}
+                icon={<MousePointerClick className="w-5 h-5" />}
                 delay={400}
+                description="Taxa de clique dos anúncios de captação"
               />
             </div>
             <CampaignTable campaigns={campanhasMacete} />
@@ -133,24 +141,28 @@ export default function Index() {
                 value={`R$ ${leadInvestido.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`}
                 icon={<DollarSign className="w-5 h-5" />}
                 delay={100}
+                description="Valor investido em campanhas de conversão"
               />
               <KPICard
                 title="Leads"
                 value={leadLeads.toString()}
                 icon={<Users className="w-5 h-5" />}
                 delay={200}
+                description="Mensagens recebidas via WhatsApp dos anúncios"
               />
               <KPICard
                 title="CPA"
                 value={`R$ ${leadCPA.toFixed(2)}`}
                 icon={<Target className="w-5 h-5" />}
                 delay={300}
+                description="Custo por lead — quanto custa cada mensagem"
               />
               <KPICard
                 title="CTR"
                 value={`${leadCTR}%`}
                 icon={<MousePointerClick className="w-5 h-5" />}
                 delay={400}
+                description="Taxa de clique nos anúncios de lead"
               />
             </div>
 
@@ -168,6 +180,30 @@ export default function Index() {
                 </p>
               </div>
             )}
+
+            {/* Melhor anúncio */}
+            {(() => {
+              const todosAnuncios = campanhasLead.flatMap(c => c.ads.map(a => ({ ...a, campanha: c.name })));
+              const melhorAnuncio = todosAnuncios.length > 0
+                ? todosAnuncios.reduce((best, a) => (a.leads > best.leads ? a : best), todosAnuncios[0])
+                : null;
+              if (!melhorAnuncio || melhorAnuncio.leads === 0) return null;
+              return (
+                <div className="card-vault p-6 mb-10 border border-primary/10">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Zap className="w-5 h-5 text-primary" />
+                    <span className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground/80">
+                      Melhor anúncio
+                    </span>
+                  </div>
+                  <p className="text-lg font-bold text-foreground">{melhorAnuncio.name}</p>
+                  <p className="text-xs text-muted-foreground/60 mt-1">Campanha: {melhorAnuncio.campanha}</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {melhorAnuncio.leads} leads · {melhorAnuncio.clicks} cliques · CTR {melhorAnuncio.ctr.toFixed(2)}% · R$ {melhorAnuncio.spend.toFixed(2)} gasto
+                  </p>
+                </div>
+              );
+            })()}
 
             <CampaignTable campaigns={campanhasLead} />
           </>

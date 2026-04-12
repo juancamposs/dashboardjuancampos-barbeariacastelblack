@@ -1,7 +1,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Campaign } from "@/lib/mock-data";
 
-const COLORS = ["#d4af37", "#a08520", "#6b5814"];
+const COLORS = ["#d4af37", "#7c3aed", "#06b6d4", "#f97316", "#22c55e", "#ec4899", "#eab308", "#8b5cf6", "#14b8a6", "#f43f5e"];
 
 export function CampaignDonut({ campaigns }: { campaigns: Campaign[] }) {
   const data = campaigns.map((c) => ({ name: c.name, value: c.spend }));

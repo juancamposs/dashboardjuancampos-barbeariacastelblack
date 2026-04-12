@@ -5,9 +5,10 @@ interface KPICardProps {
   value: string;
   icon: React.ReactNode;
   delay?: number;
+  description?: string;
 }
 
-export function KPICard({ title, value, icon, delay = 0 }: KPICardProps) {
+export function KPICard({ title, value, icon, delay = 0, description }: KPICardProps) {
   return (
     <div
       className={cn(
@@ -25,6 +26,11 @@ export function KPICard({ title, value, icon, delay = 0 }: KPICardProps) {
       <p className="text-4xl font-extrabold tracking-tight gold-text gold-glow leading-none">
         {value}
       </p>
+      {description && (
+        <p className="text-[10px] text-muted-foreground/40 mt-3 leading-relaxed">
+          {description}
+        </p>
+      )}
     </div>
   );
 }
