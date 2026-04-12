@@ -1,4 +1,3 @@
-import { useState } from "react";
 import logo from "@/assets/logo-castel-black.png";
 
 const periods = [
@@ -11,22 +10,20 @@ const periods = [
 interface DashboardHeaderProps {
   selectedDays: number;
   onSelectDays: (days: number) => void;
-  clientName: string;
 }
 
-export function DashboardHeader({ selectedDays, onSelectDays, clientName }: DashboardHeaderProps) {
+export function DashboardHeader({ selectedDays, onSelectDays }: DashboardHeaderProps) {
   return (
-    <header className="w-full py-8 opacity-0 animate-fade-in">
-      <div className="flex flex-col items-center gap-6 mb-8">
+    <header className="w-full pt-12 pb-10 opacity-0 animate-fade-in">
+      <div className="flex flex-col items-center gap-5 mb-12">
         <img
           src={logo}
-          alt={clientName}
-          className="h-24 w-auto object-contain"
+          alt="Barbearia Castel Black"
+          className="h-28 w-auto object-contain drop-shadow-lg"
         />
-        <div className="text-center">
-          <h1 className="text-xl font-semibold tracking-wide">{clientName}</h1>
-          <p className="text-sm text-muted-foreground mt-1">Performance sob controle</p>
-        </div>
+        <p className="text-xs text-muted-foreground tracking-[0.3em] uppercase">
+          Performance sob controle
+        </p>
       </div>
 
       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -35,17 +32,17 @@ export function DashboardHeader({ selectedDays, onSelectDays, clientName }: Dash
             <button
               key={p.days}
               onClick={() => onSelectDays(p.days)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 selectedDays === p.days
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-secondary"
               }`}
             >
               {p.label}
             </button>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground/70">
           Resultados atualizados há poucos minutos
         </p>
       </div>
