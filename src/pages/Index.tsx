@@ -23,7 +23,7 @@ export default function Index() {
   const campanhasMacete = campaigns.filter(c => c.tipo === "macete" || c.objective === "LINK_CLICKS");
   const campanhasLead = campaigns.filter(c => c.tipo === "lead" || c.objective !== "LINK_CLICKS");
 
-  // KPIs Macete do Milhão
+  // KPIs Impulsionamento Instagram
   const maceteInvestido = campanhasMacete.reduce((s, c) => s + c.spend, 0);
   const maceteCliques = campanhasMacete.reduce((s, c) => s + c.clicks, 0);
   const maceteImpressions = campanhasMacete.reduce((s, c) => s + c.impressions, 0);
@@ -46,6 +46,13 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-6 lg:px-8 pb-20">
         <DashboardHeader selectedDays={days} onSelectDays={setDays} />
+
+        {/* Loading State */}
+        {isLoading && (
+          <div className="text-center py-10 text-muted-foreground/50 text-sm animate-pulse">
+            Carregando dados em tempo real...
+          </div>
+        )}
 
         {/* VISÃO GERAL */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
@@ -84,10 +91,10 @@ export default function Index() {
           <>
             <div className="mb-6 mt-14">
               <h2 className="text-xl font-bold tracking-[0.1em] uppercase text-primary/80">
-                Macete do Milhão
+                Impulsionamento Instagram
               </h2>
               <p className="text-xs text-muted-foreground/50 mt-1 tracking-wider">
-                Captação · Visitas ao perfil · Crescimento de base
+                Alcance · Engajamento · Crescimento de base
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
