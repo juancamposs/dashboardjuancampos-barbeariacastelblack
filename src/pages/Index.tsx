@@ -12,7 +12,8 @@ import { mockDailyMetrics, mockCampaigns, getKPIs } from "@/lib/mock-data";
 
 export default function Index() {
   const [days, setDays] = useState(30);
-  const { data, isLoading, error } = useMetaAds(days);
+  const [customRange, setCustomRange] = useState<{ since: string; until: string } | undefined>();
+  const { data, isLoading, error } = useMetaAds(days, customRange);
 
   // Use real data if available, fallback to mock
   const metrics = data?.dailyMetrics ?? mockDailyMetrics.slice(-days);
@@ -45,7 +46,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-6 lg:px-8 pb-20">
-        <DashboardHeader selectedDays={days} onSelectDays={setDays} />
+        <DashboardHeader selectedDays={days} onSelectDays={setDays} customRange={customRange} onCustomRange={setCustomRange} />
 
         {/* Loading State */}
         {isLoading && (

@@ -18,13 +18,22 @@ serve(async (req) => {
 
   try {
     const url = new URL(req.url);
+    const since = url.searchParams.get("since");
+    const until = url.searchParams.get("until");
     const days = parseInt(url.searchParams.get("days") || "30");
 
-    const datePreset = days <= 1 ? "today" : days <= 7 ? "last_7d" : days <= 14 ? "last_14d" : "last_30d";
+    // Usar time_range para datas específicas, ou date_preset para períodos
+    let dateParam: string;
+    if (since && until) {
+      dateParam = `time_range={"since":"${since}","until":"${until}"}`;
+    } else {
+      const datePreset = days <= 1 ? "today" : days <= 7 ? "last_7d" : days <= 14 ? "last_14d" : "last_30d";
+      dateParam = `date_preset=${datePreset}`;
+    }
 
     // 1. Buscar insights por campanha
     const campaignResp = await fetch(
-      `${GRAPH_API}/${META_ACCOUNT_ID}/insights?fields=campaign_id,campaign_name,spend,impressions,clicks,cpc,cpm,ctr,actions&date_preset=${datePreset}&level=campaign&limit=50&access_token=${META_TOKEN}`
+      `${GRAPH_API}/${META_ACCOUNT_ID}/insights?fields=campaign_id,campaign_name,spend,impressions,clicks,cpc,cpm,ctr,actions&${dateParam}&level=campaign&limit=50&access_token=${META_TOKEN}`
     );
     const campaignData = await campaignResp.json();
 
@@ -34,13 +43,13 @@ serve(async (req) => {
 
     // 2. Buscar insights por anúncio
     const adResp = await fetch(
-      `${GRAPH_API}/${META_ACCOUNT_ID}/insights?fields=campaign_id,campaign_name,ad_id,ad_name,spend,impressions,clicks,cpc,ctr,actions&date_preset=${datePreset}&level=ad&limit=50&access_token=${META_TOKEN}`
+      `${GRAPH_API}/${META_ACCOUNT_ID}/insights?fields=campaign_id,campaign_name,ad_id,ad_name,spend,impressions,clicks,cpc,ctr,actions&${dateParam}&level=ad&limit=50&access_token=${META_TOKEN}`
     );
     const adData = await adResp.json();
 
     // 3. Buscar insights diários
     const dailyResp = await fetch(
-      `${GRAPH_API}/${META_ACCOUNT_ID}/insights?fields=spend,impressions,clicks,actions&date_preset=${datePreset}&time_increment=1&limit=60&access_token=${META_TOKEN}`
+      `${GRAPH_API}/${META_ACCOUNT_ID}/insights?fields=spend,impressions,clicks,actions&${dateParam}&time_increment=1&limit=60&access_token=${META_TOKEN}`
     );
     const dailyData = await dailyResp.json();
 
@@ -75,7 +84,6 @@ serve(async (req) => {
       const info = statusMap.get(c.campaign_id) || { status: "active", objective: "" };
       const status = info.status;
       const objective = info.objective || "";
-      // Classificar tipo: macete (LINK_CLICKS) ou lead (OUTCOME_ENGAGEMENT, MESSAGES)
       const tipo = objective === "LINK_CLICKS" ? "macete" : "lead";
       return {
         id: c.campaign_id,
