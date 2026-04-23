@@ -20,7 +20,12 @@ interface DashboardHeaderProps {
   onCustomRange: (range: DateRange | undefined) => void;
 }
 
-export function DashboardHeader({ selectedDays, onSelectDays, customRange, onCustomRange }: DashboardHeaderProps) {
+export function DashboardHeader({
+  selectedDays,
+  onSelectDays,
+  customRange,
+  onCustomRange,
+}: DashboardHeaderProps) {
   const [showCustom, setShowCustom] = useState(!!customRange);
   const [since, setSince] = useState(customRange?.since || "");
   const [until, setUntil] = useState(customRange?.until || "");
@@ -49,76 +54,85 @@ export function DashboardHeader({ selectedDays, onSelectDays, customRange, onCus
   const isCustomActive = !!customRange;
 
   return (
-    <header className="w-full pt-12 pb-10 opacity-0 animate-fade-in">
-      <div className="flex flex-col items-center gap-5 mb-12">
+    <header className="w-full pt-8 sm:pt-12 pb-6 sm:pb-10 opacity-0 animate-fade-in">
+      {/* Identidade Castel Black */}
+      <div className="flex flex-col items-center gap-3 sm:gap-5 mb-8 sm:mb-12">
         <img
           src={logo}
           alt="Barbearia Castel Black"
-          className="h-28 w-auto object-contain drop-shadow-lg"
+          className="h-20 sm:h-28 w-auto object-contain drop-shadow-lg"
         />
-        <p className="text-xs text-muted-foreground tracking-[0.3em] uppercase">
+        <p className="text-[10px] sm:text-xs text-muted-foreground tracking-[0.3em] uppercase text-center">
           Performance sob controle
         </p>
       </div>
 
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <div className="flex flex-wrap gap-2">
-            {periods.map((p) => (
-              <button
-                key={p.days}
-                onClick={() => handlePreset(p.days)}
-                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  !isCustomActive && selectedDays === p.days
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                    : "bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
+        {/* Botões de período — grid 2 cols no mobile, flex no desktop */}
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+          {periods.map((p) => (
             <button
-              onClick={handleToggleCustom}
-              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isCustomActive || showCustom
+              key={p.days}
+              onClick={() => handlePreset(p.days)}
+              className={`px-3 sm:px-5 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
+                !isCustomActive && selectedDays === p.days
                   ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                   : "bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-secondary"
               }`}
             >
-              Personalizado
+              {p.label}
             </button>
-          </div>
-          <p className="text-xs text-muted-foreground/70">
-            {isCustomActive
-              ? `${new Date(customRange!.since + "T12:00:00").toLocaleDateString("pt-BR")} – ${new Date(customRange!.until + "T12:00:00").toLocaleDateString("pt-BR")}`
-              : "Resultados atualizados há poucos minutos"}
-          </p>
+          ))}
+          <button
+            onClick={handleToggleCustom}
+            className={`col-span-2 sm:col-span-1 px-3 sm:px-5 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
+              isCustomActive || showCustom
+                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                : "bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-secondary"
+            }`}
+          >
+            Personalizado
+          </button>
         </div>
 
+        <p className="text-[10px] sm:text-xs text-muted-foreground/70 text-center sm:text-left">
+          {isCustomActive
+            ? `${new Date(customRange!.since + "T12:00:00").toLocaleDateString(
+                "pt-BR"
+              )} – ${new Date(customRange!.until + "T12:00:00").toLocaleDateString(
+                "pt-BR"
+              )}`
+            : "Resultados atualizados há poucos minutos"}
+        </p>
+
         {showCustom && (
-          <div className="flex flex-wrap items-center gap-3 p-4 rounded-xl bg-secondary/30 border border-border/30 animate-fade-in">
-            <div className="flex items-center gap-2">
-              <label className="text-xs text-muted-foreground/70 uppercase tracking-wider">De</label>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 p-3 sm:p-4 rounded-xl bg-secondary/30 border border-border/30 animate-fade-in">
+            <div className="flex items-center gap-2 flex-1">
+              <label className="text-[10px] sm:text-xs text-muted-foreground/70 uppercase tracking-wider w-8">
+                De
+              </label>
               <input
                 type="date"
                 value={since}
                 onChange={(e) => setSince(e.target.value)}
-                className="bg-secondary/60 border border-border/40 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary/50"
+                className="flex-1 sm:flex-none bg-secondary/60 border border-border/40 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary/50"
               />
             </div>
-            <div className="flex items-center gap-2">
-              <label className="text-xs text-muted-foreground/70 uppercase tracking-wider">Até</label>
+            <div className="flex items-center gap-2 flex-1">
+              <label className="text-[10px] sm:text-xs text-muted-foreground/70 uppercase tracking-wider w-8">
+                Até
+              </label>
               <input
                 type="date"
                 value={until}
                 onChange={(e) => setUntil(e.target.value)}
-                className="bg-secondary/60 border border-border/40 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary/50"
+                className="flex-1 sm:flex-none bg-secondary/60 border border-border/40 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary/50"
               />
             </div>
             <button
               onClick={handleApply}
               disabled={!since || !until || since > until}
-              className="px-5 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+              className="w-full sm:w-auto px-5 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
             >
               Aplicar
             </button>

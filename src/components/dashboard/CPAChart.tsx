@@ -22,18 +22,18 @@ export function CPAChart({ data }: { data: DailyMetric[] }) {
   const avg = withLeads.length > 0 ? withLeads.reduce((s, m) => s + m.cpa, 0) / withLeads.length : 0;
 
   return (
-    <div className="card-vault opacity-0 animate-fade-in p-8" style={{ animationDelay: "600ms" }}>
-      <div className="flex items-center justify-between mb-8">
-        <h3 className="text-xs font-medium text-muted-foreground/80 uppercase tracking-[0.15em]">
+    <div className="card-vault opacity-0 animate-fade-in p-5 sm:p-8" style={{ animationDelay: "600ms" }}>
+      <div className="flex items-center justify-between mb-5 sm:mb-8 gap-2">
+        <h3 className="text-[10px] sm:text-xs font-medium text-muted-foreground/80 uppercase tracking-[0.15em]">
           CPA diário
         </h3>
         {avg > 0 && (
-          <span className="text-xs text-muted-foreground/50">
+          <span className="text-[10px] sm:text-xs text-muted-foreground/50 whitespace-nowrap">
             média R$ {avg.toFixed(2)}
           </span>
         )}
       </div>
-      <ResponsiveContainer width="100%" height={260}>
+      <ResponsiveContainer width="100%" height={240}>
         <LineChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(230 12% 14%)" vertical={false} />
           <XAxis

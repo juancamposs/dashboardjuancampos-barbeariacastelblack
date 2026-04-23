@@ -21,11 +21,11 @@ export function LeadsChart({ data }: { data: DailyMetric[] }) {
   const maxLeads = Math.max(...data.map((d) => d.leads), 1);
 
   return (
-    <div className="card-vault opacity-0 animate-fade-in p-8" style={{ animationDelay: "500ms" }}>
-      <h3 className="text-xs font-medium text-muted-foreground/80 uppercase tracking-[0.15em] mb-8">
+    <div className="card-vault opacity-0 animate-fade-in p-5 sm:p-8" style={{ animationDelay: "500ms" }}>
+      <h3 className="text-[10px] sm:text-xs font-medium text-muted-foreground/80 uppercase tracking-[0.15em] mb-5 sm:mb-8">
         Leads por dia
       </h3>
-      <ResponsiveContainer width="100%" height={260}>
+      <ResponsiveContainer width="100%" height={240}>
         <BarChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(230 12% 14%)" vertical={false} />
           <XAxis
