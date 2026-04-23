@@ -246,7 +246,7 @@ export default function Index() {
                 description="Taxa de clique dos anúncios de captação"
               />
             </div>
-            <CampaignTable campaigns={campanhasMacete} />
+            <CampaignTable campaigns={campanhasMacete} showLeads={false} />
           </>
         )}
 

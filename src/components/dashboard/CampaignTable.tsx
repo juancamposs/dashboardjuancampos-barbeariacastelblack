@@ -3,7 +3,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { Campaign } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
-export function CampaignTable({ campaigns }: { campaigns: Campaign[] }) {
+export function CampaignTable({ campaigns, showLeads = true }: { campaigns: Campaign[]; showLeads?: boolean }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [sortKey, setSortKey] = useState<keyof Campaign>("name");
   const [sortAsc, setSortAsc] = useState(true);
@@ -96,12 +96,14 @@ export function CampaignTable({ campaigns }: { campaigns: Campaign[] }) {
 
             <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-4 pb-4 text-xs">
               <MobileStat label="Gasto" value={`R$ ${c.spend.toFixed(2)}`} />
-              <MobileStat label="Leads" value={c.leads.toString()} />
-              <MobileStat
-                label="CPA"
-                value={`R$ ${c.cpa.toFixed(2)}`}
-                className={cpaColor(c.cpa)}
-              />
+              {showLeads && <MobileStat label="Leads" value={c.leads.toString()} />}
+              {showLeads && (
+                <MobileStat
+                  label="CPA"
+                  value={`R$ ${c.cpa.toFixed(2)}`}
+                  className={cpaColor(c.cpa)}
+                />
+              )}
               <MobileStat label="CTR" value={`${c.ctr}%`} />
               <MobileStat
                 label="Impressões"
@@ -148,8 +150,8 @@ export function CampaignTable({ campaigns }: { campaigns: Campaign[] }) {
               {th("Cliques", "clicks")}
               {th("CTR", "ctr")}
               {th("CPC", "cpc")}
-              {th("Leads", "leads")}
-              {th("CPA", "cpa")}
+              {showLeads && th("Leads", "leads")}
+              {showLeads && th("CPA", "cpa")}
             </tr>
           </thead>
           <tbody>
@@ -192,12 +194,12 @@ export function CampaignTable({ campaigns }: { campaigns: Campaign[] }) {
                   <td className="px-5 py-4 text-foreground/70">
                     R$ {c.cpc.toFixed(2)}
                   </td>
-                  <td className="px-5 py-4 text-foreground/70">{c.leads}</td>
-                  <td
-                    className={cn("px-5 py-4 font-semibold", cpaColor(c.cpa))}
-                  >
-                    R$ {c.cpa.toFixed(2)}
-                  </td>
+                  {showLeads && <td className="px-5 py-4 text-foreground/70">{c.leads}</td>}
+                  {showLeads && (
+                    <td className={cn("px-5 py-4 font-semibold", cpaColor(c.cpa))}>
+                      R$ {c.cpa.toFixed(2)}
+                    </td>
+                  )}
                 </tr>
                 {expanded.has(c.id) &&
                   c.ads.map((ad) => (
@@ -221,10 +223,8 @@ export function CampaignTable({ campaigns }: { campaigns: Campaign[] }) {
                         {ad.ctr}%
                       </td>
                       <td />
-                      <td className="px-5 py-3.5 text-xs text-foreground/50">
-                        {ad.leads}
-                      </td>
-                      <td />
+                      {showLeads && <td className="px-5 py-3.5 text-xs text-foreground/50">{ad.leads}</td>}
+                      {showLeads && <td />}
                     </tr>
                   ))}
               </Fragment>
