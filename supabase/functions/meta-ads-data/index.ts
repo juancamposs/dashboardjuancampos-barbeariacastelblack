@@ -85,7 +85,7 @@ serve(async (req) => {
       const status = info.status;
       const objective = info.objective || "";
       // Campanhas de lead/mensagens — tudo mais é engajamento/boost (macete)
-      const leadObjectives = ["MESSAGES", "LEAD_GENERATION", "CONVERSIONS", "OUTCOME_LEADS", "OUTCOME_SALES", "OUTCOME_ENGAGEMENT"];
+      const leadObjectives = ["MESSAGES", "LEAD_GENERATION", "CONVERSIONS", "OUTCOME_LEADS", "OUTCOME_SALES"];
       const tipo = leadObjectives.includes(objective) ? "lead" : "macete";
       return {
         id: c.campaign_id,
