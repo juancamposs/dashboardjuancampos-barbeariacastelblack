@@ -146,16 +146,14 @@ serve(async (req) => {
 
 function getLeads(actions: any[]): number {
   if (!actions) return 0;
-  let leads = 0;
-  for (const a of actions) {
-    if (
-      a.action_type === "onsite_conversion.messaging_conversation_started_7d" ||
-      a.action_type === "onsite_conversion.messaging_first_reply" ||
-      a.action_type === "lead" ||
-      a.action_type === "offsite_conversion.fb_pixel_lead"
-    ) {
-      leads += parseInt(a.value || "0");
-    }
-  }
-  return leads;
+  const find = (type: string) => {
+    const a = actions.find((a: any) => a.action_type === type);
+    return a ? parseInt(a.value || "0") : 0;
+  };
+  // Prioridade: conversas iniciadas no WhatsApp (não soma com first_reply para evitar duplicação)
+  const whatsapp = find("onsite_conversion.messaging_conversation_started_7d");
+  if (whatsapp > 0) return whatsapp;
+  // Fallback para formulários de lead
+  const leadForm = find("lead") || find("offsite_conversion.fb_pixel_lead");
+  return leadForm;
 }
